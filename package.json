@@ -20,11 +20,8 @@
     "cli-update-w": ".\\node_modules\\.bin\\library-cli --updateversion --pi",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@thzero/library_client": "^0.15",
     "@thzero/library_common": "^0.15"
-  },
-  "devDependencies": {
-    "@thzero/library_cli": "^0.15"
   }
 }
