@@ -99,7 +99,7 @@ class FetchRestCommunicationService extends RestCommunicationService {
 	}
 
 	_requestNewToken() {
-		return this._serviceAuth.tokenUser(null, true);
+		return this._serviceAuth.refreshToken(null, true);
 	}
 
 	async _validate(correlationId, response) {
