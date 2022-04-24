@@ -16,8 +16,7 @@
   },
   "homepage": "https://github.com/thzero/library_client_service_rest_fetch#readme",
   "scripts": {
-    "cli-update": "./node_modules/.bin/library-cli --updateversion --pi",
-    "cli-update-w": ".\\node_modules\\.bin\\library-cli --updateversion --pi",
+    "cli-update": "library-cli --updateversion --pi",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "peerDependencies": {
