@@ -7,6 +7,7 @@ import LibraryUtility from '@thzero/library_common/utility';
 import RestCommunicationService from '@thzero/library_client/service/restCommunication';
 
 const separator = ': ';
+const acceptType = 'accept';
 const contentType = 'Content-Type';
 const contentTypeJson = 'application/json';
 
@@ -74,8 +75,8 @@ class FetchRestCommunicationService extends RestCommunicationService {
 		headers[acceptType] = (opts && opts.acceptType != null ? opts.acceptType : contentTypeJson);
 		headers[contentType] = (opts && opts.contentType != null ? opts.contentType : contentTypeJson);
 		if (opts && opts.headers)
-			//opts = Object.assign(headers, opts.headers);
-			opts = { ...headers, ...opts.headers }
+			// opts = Object.assign(headers, opts.headers);
+			opts = { ...headers, ...opts.headers };
 
 		let options = {
 			baseURL: baseUrl,
