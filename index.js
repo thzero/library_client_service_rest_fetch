@@ -30,6 +30,8 @@ class FetchRestCommunicationService extends RestCommunicationService {
 	}
 
 	async deleteById(correlationId, key, url, id, options) {
+		options = options ? options : {};
+		options.ignoreContentType = true;
 		const executor = await this._create(correlationId, key, options);
 		return await this._validate(correlationId, await executor.delete(LibraryCommonUtility.formatUrlParams(url, id)));
 	}
@@ -72,8 +74,19 @@ class FetchRestCommunicationService extends RestCommunicationService {
 			headers[LibraryClientConstants.Headers.CorrelationId] = correlationId ? correlationId : LibraryCommonUtility.generateId();
 		if (token && !(opts && opts.ignoreToken))
 			headers[LibraryClientConstants.Headers.AuthKeys.AUTH] = LibraryClientConstants.Headers.AuthKeys.AUTH_BEARER + separator + token;
-		headers[acceptType] = (opts && opts.acceptType != null ? opts.acceptType : contentTypeJson);
-		headers[contentType] = (opts && opts.contentType != null ? opts.contentType : contentTypeJson);
+
+		let ignoreAcceptType = false;
+		if (opts && (opts.ignoreAcceptType !== null || opts.ignoreAcceptType !== undefined))
+			ignoreAcceptType = opts.ignoreAcceptType;
+		if (!ignoreAcceptType)
+			headers[acceptType] = (opts && opts.acceptType != null ? opts.acceptType : contentTypeJson);
+
+		let ignoreContentType = false;
+		if (opts && (opts.ignoreContentType !== null || opts.ignoreContentType !== undefined))
+			ignoreContentType = opts.ignoreContentType;
+		if (!ignoreContentType)
+			headers[contentType] = (opts && opts.contentType != null ? opts.contentType : contentTypeJson);
+
 		if (opts && opts.headers)
 			// opts = Object.assign(headers, opts.headers);
 			opts = { ...headers, ...opts.headers };
