@@ -1,9 +1,9 @@
 {
   "name": "@thzero/library_client_service_rest_fetch",
-  "version": "0.18.7",
+  "version": "0.18.8",
   "version_major": 0,
   "version_minor": 18,
-  "version_patch": 7,
+  "version_patch": 8,
   "version_date": "02/07/2026",
   "author": "thZero",
   "author_url": "https://www.thzero.com",
