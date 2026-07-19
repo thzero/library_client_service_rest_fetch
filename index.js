@@ -26,14 +26,14 @@ class FetchRestCommunicationService extends RestCommunicationService {
 
 	async delete(correlationId, key, url, options) {
 		const executor = await this._create(correlationId, key, options);
-		return await this._validate(correlationId, await executor.delete(LibraryCommonUtility.formatUrl(url)));
+		return await this._validate(correlationId, await executor.delete(LibraryCommonUtility.formatUrl(url), {}));
 	}
 
 	async deleteById(correlationId, key, url, id, options) {
 		options = options ? options : {};
-		options.ignoreContentType = true;
+		options.ignoreContentType = true;		
 		const executor = await this._create(correlationId, key, options);
-		return await this._validate(correlationId, await executor.delete(LibraryCommonUtility.formatUrlParams(url, id)));
+		return await this._validate(correlationId, await executor.delete(LibraryCommonUtility.formatUrlParams(url, id), {}));
 	}
 
 	async get(correlationId, key, url, options) {
@@ -100,8 +100,9 @@ class FetchRestCommunicationService extends RestCommunicationService {
 		};
 
 		const instance = {
-			delete: async (url) => { 
+			delete: async (url, body) => {
 				options.method = 'DELETE';
+				options.body = JSON.stringify(body ?? {});
 				return await fetch(options.baseURL + url, options);
 			},
 			get: async (url) => { 
