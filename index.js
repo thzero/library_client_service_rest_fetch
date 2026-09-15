@@ -57,7 +57,7 @@ class FetchRestCommunicationService extends RestCommunicationService {
 	}
 
 	async _create(correlationId, key, opts) {
-		const config = this._config.getBackend(key);
+		const config = this._config.getBackend(correlationId, key);
 		let baseUrl = config.baseUrl;
 		if (!baseUrl.endsWith('/'))
 			baseUrl += '/';
@@ -79,13 +79,13 @@ class FetchRestCommunicationService extends RestCommunicationService {
 		if (opts && (opts.ignoreAcceptType !== null || opts.ignoreAcceptType !== undefined))
 			ignoreAcceptType = opts.ignoreAcceptType;
 		if (!ignoreAcceptType)
-			headers[acceptType] = (opts && opts.acceptType != null ? opts.acceptType : contentTypeJson);
+			headers[acceptType] = (opts?.acceptType ?? contentTypeJson);
 
 		let ignoreContentType = false;
 		if (opts && (opts.ignoreContentType !== null || opts.ignoreContentType !== undefined))
 			ignoreContentType = opts.ignoreContentType;
 		if (!ignoreContentType)
-			headers[contentType] = (opts && opts.contentType != null ? opts.contentType : contentTypeJson);
+			headers[contentType] = (opts?.contentType ?? contentTypeJson);
 
 		if (opts && opts.headers)
 			// opts = Object.assign(headers, opts.headers);
