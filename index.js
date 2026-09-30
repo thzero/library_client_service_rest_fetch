@@ -119,8 +119,10 @@ class FetchRestCommunicationService extends RestCommunicationService {
 		return instance;
 	}
 
-	_requestNewToken() {
-		return this._serviceAuth.refreshToken(null, true);
+	_requestNewToken(correlationId, force) {
+		// was refreshToken(null, true): the arguments shifted, so the auth service
+		// saw no correlationId, the user as true, and no forced refresh
+		return this._refreshToken(correlationId, force);
 	}
 
 	async _validate(correlationId, response) {
@@ -134,8 +136,14 @@ class FetchRestCommunicationService extends RestCommunicationService {
 			return await response.json();
 		}
 
-		if (response.status === 401)
-			this._requestNewToken(correlationId, true);
+		if (response.status === 401) {
+			try {
+				await this._requestNewToken(correlationId, true);
+			}
+			catch (err) {
+				this._logger.exception('FetchRestCommunicationService', '_validate', err, correlationId);
+			}
+		}
 
 		return this._error('FetchRestCommunicationService', '_validate', null, null, null, null, correlationId);
 	}
