@@ -1,5 +1,6 @@
 {
   "name": "@thzero/library_client_service_rest_fetch",
+  "type": "module",
   "version": "0.18.10",
   "version_major": 0,
   "version_minor": 18,
