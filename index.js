@@ -69,27 +69,23 @@ class FetchRestCommunicationService extends RestCommunicationService {
 		const headers = {};
 		if (config.apiKey)
 			headers[LibraryClientConstants.Headers.AuthKeys.API] = config.apiKey;
-		// eslint-disable-next-line
 		if (!(opts && opts.ignoreCorrelationId))
 			headers[LibraryClientConstants.Headers.CorrelationId] = correlationId ? correlationId : LibraryCommonUtility.generateId();
 		if (token && !(opts && opts.ignoreToken))
 			headers[LibraryClientConstants.Headers.AuthKeys.AUTH] = LibraryClientConstants.Headers.AuthKeys.AUTH_BEARER + separator + token;
 
-		let ignoreAcceptType = false;
-		if (opts && (opts.ignoreAcceptType !== null || opts.ignoreAcceptType !== undefined))
-			ignoreAcceptType = opts.ignoreAcceptType;
+		const ignoreAcceptType = !!(opts && opts.ignoreAcceptType);
 		if (!ignoreAcceptType)
 			headers[acceptType] = (opts?.acceptType ?? contentTypeJson);
 
-		let ignoreContentType = false;
-		if (opts && (opts.ignoreContentType !== null || opts.ignoreContentType !== undefined))
-			ignoreContentType = opts.ignoreContentType;
+		const ignoreContentType = !!(opts && opts.ignoreContentType);
 		if (!ignoreContentType)
 			headers[contentType] = (opts?.contentType ?? contentTypeJson);
 
+		// a caller's headers win over the defaults; this built the merged map into opts,
+		// where it was never sent
 		if (opts && opts.headers)
-			// opts = Object.assign(headers, opts.headers);
-			opts = { ...headers, ...opts.headers };
+			Object.assign(headers, opts.headers);
 
 		let options = {
 			baseURL: baseUrl,
