@@ -20,13 +20,16 @@
   "homepage": "https://github.com/thzero/library_client_service_rest_fetch#readme",
   "scripts": {
     "cli-update": "library-cli --updateversion --pi",
-    "test": "vitest run"
+    "test": "vitest run",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "peerDependencies": {
     "@thzero/library_client": "^0.18",
     "@thzero/library_common": "^0.19"
   },
   "devDependencies": {
+    "eslint": "^9",
     "vitest": "^5.0.1"
   }
 }
