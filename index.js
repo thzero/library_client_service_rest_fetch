@@ -57,7 +57,7 @@ class FetchRestCommunicationService extends RestCommunicationService {
 	}
 
 	async _create(correlationId, key, opts) {
-		const config = this._config.getBackend(key);
+		const config = this._config.getBackend(correlationId, key);
 		let baseUrl = config.baseUrl;
 		if (!baseUrl.endsWith('/'))
 			baseUrl += '/';
@@ -69,27 +69,23 @@ class FetchRestCommunicationService extends RestCommunicationService {
 		const headers = {};
 		if (config.apiKey)
 			headers[LibraryClientConstants.Headers.AuthKeys.API] = config.apiKey;
-		// eslint-disable-next-line
 		if (!(opts && opts.ignoreCorrelationId))
 			headers[LibraryClientConstants.Headers.CorrelationId] = correlationId ? correlationId : LibraryCommonUtility.generateId();
 		if (token && !(opts && opts.ignoreToken))
 			headers[LibraryClientConstants.Headers.AuthKeys.AUTH] = LibraryClientConstants.Headers.AuthKeys.AUTH_BEARER + separator + token;
 
-		let ignoreAcceptType = false;
-		if (opts && (opts.ignoreAcceptType !== null || opts.ignoreAcceptType !== undefined))
-			ignoreAcceptType = opts.ignoreAcceptType;
+		const ignoreAcceptType = !!(opts && opts.ignoreAcceptType);
 		if (!ignoreAcceptType)
-			headers[acceptType] = (opts && opts.acceptType != null ? opts.acceptType : contentTypeJson);
+			headers[acceptType] = (opts?.acceptType ?? contentTypeJson);
 
-		let ignoreContentType = false;
-		if (opts && (opts.ignoreContentType !== null || opts.ignoreContentType !== undefined))
-			ignoreContentType = opts.ignoreContentType;
+		const ignoreContentType = !!(opts && opts.ignoreContentType);
 		if (!ignoreContentType)
-			headers[contentType] = (opts && opts.contentType != null ? opts.contentType : contentTypeJson);
+			headers[contentType] = (opts?.contentType ?? contentTypeJson);
 
+		// a caller's headers win over the defaults; this built the merged map into opts,
+		// where it was never sent
 		if (opts && opts.headers)
-			// opts = Object.assign(headers, opts.headers);
-			opts = { ...headers, ...opts.headers };
+			Object.assign(headers, opts.headers);
 
 		let options = {
 			baseURL: baseUrl,
@@ -119,8 +115,10 @@ class FetchRestCommunicationService extends RestCommunicationService {
 		return instance;
 	}
 
-	_requestNewToken() {
-		return this._serviceAuth.refreshToken(null, true);
+	_requestNewToken(correlationId, force) {
+		// was refreshToken(null, true): the arguments shifted, so the auth service
+		// saw no correlationId, the user as true, and no forced refresh
+		return this._refreshToken(correlationId, force);
 	}
 
 	async _validate(correlationId, response) {
@@ -134,8 +132,14 @@ class FetchRestCommunicationService extends RestCommunicationService {
 			return await response.json();
 		}
 
-		if (response.status === 401)
-			this._requestNewToken(correlationId, true);
+		if (response.status === 401) {
+			try {
+				await this._requestNewToken(correlationId, true);
+			}
+			catch (err) {
+				this._logger.exception('FetchRestCommunicationService', '_validate', err, correlationId);
+			}
+		}
 
 		return this._error('FetchRestCommunicationService', '_validate', null, null, null, null, correlationId);
 	}
