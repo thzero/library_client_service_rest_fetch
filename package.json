@@ -1,11 +1,11 @@
 {
   "name": "@thzero/library_client_service_rest_fetch",
   "type": "module",
-  "version": "0.19.3",
+  "version": "0.19.4",
   "version_major": 0,
   "version_minor": 19,
-  "version_patch": 3,
-  "version_date": "10/09/2026",
+  "version_patch": 4,
+  "version_date": "11/09/2026",
   "author": "thZero",
   "author_url": "https://www.thzero.com",
   "copyright": "2020-2026",
@@ -30,9 +30,9 @@
     "@thzero/library_common": "^0.19"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^5.0.3",
-    "@vitest/eslint-plugin": "^1.6.27",
+    "@vitest/coverage-v8": "^5.1.0",
+    "@vitest/eslint-plugin": "^1.6.28",
     "eslint": "^10",
-    "vitest": "^5.0.3"
+    "vitest": "^5.1.0"
   }
 }
