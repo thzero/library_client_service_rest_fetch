@@ -132,6 +132,9 @@ class FetchRestCommunicationService extends RestCommunicationService {
 			return await response.json();
 		}
 
+		// The server's message and code say why it refused. Provide error upstream.
+		const body = (typeof response.json === 'function') ? await response.json().catch(() => null) : null;
+
 		if (response.status === 401) {
 			try {
 				await this._requestNewToken(correlationId, true);
@@ -141,7 +144,7 @@ class FetchRestCommunicationService extends RestCommunicationService {
 			}
 		}
 
-		return this._error('FetchRestCommunicationService', '_validate', null, null, null, null, correlationId);
+		return this._error('FetchRestCommunicationService', '_validate', body?.message ?? `Request failed (${response.status}).`, null, body?.code ?? response.status, null, correlationId);
 	}
 }
 

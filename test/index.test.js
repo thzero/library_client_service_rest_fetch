@@ -44,4 +44,20 @@ describe('FetchRestCommunicationService._validate', () => {
 
 		expect(spy).not.toHaveBeenCalled();
 	});
+
+	it('keeps the message the server refused with', async () => {
+		vi.spyOn(service, '_refreshToken').mockImplementation(async () => {});
+
+		const response = await service._validate('cid', { status: 401, json: async () => ({ success: false, message: 'Discord did not confirm the sign-in.', code: 'denied' }) });
+
+		expect(response.success).toBe(false);
+		expect(response.message).toBe('Discord did not confirm the sign-in.');
+	});
+
+	it('says what failed when the server sent no reason', async () => {
+		const response = await service._validate('cid', { status: 500, json: async () => { throw new Error('not json'); } });
+
+		expect(response.success).toBe(false);
+		expect(response.message).toBe('Request failed (500).');
+	});
 });
