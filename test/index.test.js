@@ -52,6 +52,8 @@ describe('FetchRestCommunicationService._validate', () => {
 
 		expect(response.success).toBe(false);
 		expect(response.message).toBe('Discord did not confirm the sign-in.');
+		// Nothing in errors: forms show those, and never showed anything for a refusal.
+		expect(response.errors).toBeNull();
 	});
 
 	it('says what failed when the server sent no reason', async () => {

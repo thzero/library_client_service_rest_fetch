@@ -144,7 +144,9 @@ class FetchRestCommunicationService extends RestCommunicationService {
 			}
 		}
 
-		return this._error('FetchRestCommunicationService', '_validate', body?.message ?? `Request failed (${response.status}).`, null, body?.code ?? response.status, null, correlationId);
+		// Only the message: a code would add an entry to the response's errors, which forms
+		// show (handleError), and apps never showed anything there for a refusal.
+		return this._error('FetchRestCommunicationService', '_validate', body?.message ?? `Request failed (${response.status}).`, null, null, null, correlationId);
 	}
 }
 
